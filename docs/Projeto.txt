@@ -1,0 +1,22 @@
+Projeto de Machine Learning Engineering
+
+Projeto de Classificação de Imagens com Deployment
+
+Vamos utilizar um dataset de frutas para ajudar em agricultura
+
+Stack:
+
+Bibliotecas -> Pytorch, OpenCV, Numpy, Pillow
+Modelos -> Por enquanto Yolov5
+Tracking e Experimentos - MLFlow
+Servir o modelo -> FastAPI e Docker
+
+Dataset:
+
+https://www.kaggle.com/datasets/mohammedarfathr/orange-fruit-daatset
+
+Modelo:
+
+Resnet-50 no Pytorch
+
+https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html?utm_source=chatgpt.com -> Finetuning

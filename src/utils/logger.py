@@ -3,17 +3,17 @@ import mlflow
 import os
 
 
-def init_experiment(name, path):
-    # Corrigido o caminho para o formato de URI 'file:///'
-    tracking_uri = f"file:///{os.path.abspath(path)}"
-    model_registry_uri = f"{tracking_uri}/models"
+def init_experiment(name):
+    try:
+        # Usando o diretório atual para salvar os experimentos
+        tracking_uri = f"file:///{os.path.abspath(os.getcwd()).replace('\\', '/')}/mlruns"
 
-    # Configura o URI de rastreamento do MLflow
-    mlflow.set_tracking_uri(tracking_uri)
-    mlflow.set_registry_uri(model_registry_uri)
+        # Configura o tracking URI no MLflow
+        mlflow.set_tracking_uri(tracking_uri)
 
-    # Cria o experimento
-    mlflow.set_experiment(name)
+        # Cria ou configura o experimento
+        mlflow.set_experiment(name)
 
-    print('Experiment created.')
-
+        print(f"Experiment '{name}' initialized at {tracking_uri}")
+    except Exception as e:
+        print(f"Error initializing experiment: {e}")

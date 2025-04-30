@@ -7,7 +7,7 @@
 
 # Experiments
 
-/experiments/
+/mlruns/
 
 # Mac OS-specific storage files
 .DS_Store

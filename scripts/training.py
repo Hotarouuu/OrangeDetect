@@ -1,15 +1,12 @@
 from src.models.resnet_finetuned import create_resnet50_model
+from src.models.resnet101_finetuned import create_resnet101_model
 from src.data.dataloader import dataload
-from src.utils.logger import init_experiment
-from src.test.test import testing_model
 from src.train.train import Trainer
-import mlflow
-import mlflow.pytorch
-import os
-import datetime
 import warnings
+import torch
 warnings.filterwarnings("ignore")
 import argparse
+import wandb
 
 # Hyperparameters
 
@@ -17,69 +14,79 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--LEARNING_RATE', type=float, help='Initial Learning Rate')
 parser.add_argument('--EPOCHS', type=int, help='Training Epochs')
+parser.add_argument('--NAME', type=str, help='Experiment name')
+parser.add_argument('--MODEL', type=str, help='Available models: Resnet50, Resnet101')
+
+
 args = parser.parse_args()
 
-# Using Parser for Terminal
+lr = args.LEARNING_RATE
+epochs = args.EPOCHS
+name = args.NAME
+model_name = args.MODEL
 
 def main():
 
     path_data = r'C:\Users\Lucas\Documents\GitHub\OrangeDetect\data\processed'
     name_ml = 'Orange Detect'
 
-    init_experiment(name_ml)
+    if args.LEARNING_RATE is None:
+        lr = 0.001
+    else:
+        pass  
 
-    model, criterion, optimizer_conv = create_resnet50_model(num_classes=3, lr=args.LEARNING_RATE)
+    if model_name  == None:
+        raise TypeError('Available models: Resnet50, Resnet101')
+    elif model_name == 'resnet101' or model_name == 'Resnet101':
+        model, criterion, optimizer_conv = create_resnet101_model(num_classes=3, lr=lr)
+    else:
+        model, criterion, optimizer_conv = create_resnet50_model(num_classes=3, lr=lr)
+
 
     train_dataloader, test_dataloader, eval_dataloader = dataload(path_data)
 
-    # Iniciar o run no MLflow
-    with mlflow.start_run() as run:
-
-        model.to(device='cuda')
-
-        # Logar hiperparâmetros
-        params = {
-            'Loss Function' : criterion,
-            'Optimizer' : optimizer_conv.__class__,
-            'Learning Rate' : args.LEARNING_RATE,
-            'Epochs' : args.EPOCHS
-        }
-        mlflow.log_params(params)
-
-        # Treinamento e Testando
-
-        training = Trainer(model, train_dataloader, eval_dataloader, criterion, optimizer_conv, device='cuda', epochs=args.EPOCHS)
-        training.train()
-
-        # Testando modelo 
-
-        f1sc, precision, recall, confusio= training.test()
-
-        # Logar métricas
-        mlflow.log_metric("F1 Score", f1sc)
-        mlflow.log_metric("Precision", precision)
-        mlflow.log_metric("Recall", recall)
-
-        print('\nMétricas logadas')
+    # Training
 
 
-        # Logando os pesos do modelo
-        #model_path = 'resnet-50-finetuned.pth'
-        #torch.save(model.state_dict(), model_path)  # Salva só os pesos
-        #mlflow.log_artifact(model_path)  # Loga o arquivo
+    config = {
+        'Optimizer' : optimizer_conv,
+        'Loss Function' : criterion,
+        'Model' : model_name,
+        'Num Classes' : 3
+    }
 
-        # Logando o modelo
+    training = Trainer(
+    model=model,
+    train_loader=train_dataloader,
+    eval_loader=eval_dataloader,
+    test_dataloader=test_dataloader,
+    criterion=criterion,
+    optimizer=optimizer_conv,
+    device='cuda',
+    epochs=epochs,
+    project="Orange Detect",
+    config = config,
+    run_name=name
+)
 
-        mlflow.pytorch.log_model(model, "resnet-50-finetuned")
+    training.train()
 
-        # Salvando o modelo
 
-        ## Gera nome automático
-        id = run.info.run_id
-        base_path = r"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models"
-        save_path = os.path.join(base_path, f"resnet50_{id}")
+    print('\nMetrics logged')
 
-        mlflow.pytorch.save_model(model, path=save_path)
+
+    # Loggin Model Artifact
+    dummy_input = torch.randn(1, 3, 224, 224).float().to(device='cuda')
+    torch.onnx.export(model, dummy_input, rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.onnx")
+    torch.save(model.state_dict(), rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.pth")
+
+    artifact = wandb.Artifact(f"resnet-finetuned.onnx", type="model")
+    artifact2 = wandb.Artifact(f'resnet-finetuned', type='model')
+    artifact.add_file(rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.onnx")
+    artifact2.add_file(rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.pth")
+    wandb.log_artifact(artifact)
+    wandb.log_artifact(artifact2)
+
 
 
 if __name__ == "__main__":

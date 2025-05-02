@@ -2,30 +2,25 @@
 # GLOBALS                                                                       #
 #################################################################################
 
-PROJECT_NAME = computer_vision
+PROJECT_NAME = OrangeDetect
 PYTHON_VERSION = 3.12
-PYTHON_INTERPRETER = python
+PYTHON_INTERPRETER = python  # Usa o Python padrão, você pode também apontar para python3 se necessário
 
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
-
 
 ## Install Python dependencies
 .PHONY: requirements
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-	
-
-
 
 ## Delete all compiled Python files
 .PHONY: clean
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
-
 
 ## Lint using ruff (use `make format` to do formatting)
 .PHONY: lint
@@ -39,26 +34,15 @@ format:
 	ruff check --fix
 	ruff format
 
-
-
-
-
-## Set up Python interpreter environment
+## Set up Python virtual environment
 .PHONY: create_environment
 create_environment:
-	
-	conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION) -y
-	
-	@echo ">>> conda env created. Activate with:\nconda activate $(PROJECT_NAME)"
-	
-
-
+	$(PYTHON_INTERPRETER) -m venv $(PROJECT_NAME)
+	@echo ">>> Virtual environment created. Activate with:\nsource $(PROJECT_NAME)/bin/activate"
 
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
-
-
 
 #################################################################################
 # Self Documenting Commands                                                     #
@@ -77,3 +61,4 @@ export PRINT_HELP_PYSCRIPT
 
 help:
 	@$(PYTHON_INTERPRETER) -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)
+

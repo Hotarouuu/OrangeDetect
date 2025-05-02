@@ -1,4 +1,4 @@
-# Computer Vision
+# Orange Detect Project
 
 <a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
     <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
@@ -9,53 +9,38 @@ A short description of the project.
 ## Project Organization
 
 ```
-├── LICENSE            <- Open-source license if one is chosen
+├── LICENSE            <- Open-source license 
 ├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
-├── README.md          <- The top-level README for developers using this project.
+├── README.md 
 ├── data
-│   ├── external       <- Data from third party sources.
-│   ├── interim        <- Intermediate data that has been transformed.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
+│   ├── eval           <- Folder for Validation Data
+    ├── train          <- Folder for Training Data
+    ├── test           <- Folder for Testing Data
 │
 ├── docs               <- A default mkdocs project; see www.mkdocs.org for details
 │
-├── models             <- Trained and serialized models, model predictions, or model summaries
+├── models             <- Folder only for storing artifacts from Weight & Biases
 │
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
-│
-├── pyproject.toml     <- Project configuration file with package metadata for 
-│                         computer_vision and configuration for tools like black
-│
-├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-│
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
+├── notebooks          <- Jupyter notebooks for prototypes
 │
 ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
 │                         generated with `pip freeze > requirements.txt`
 │
-├── setup.cfg          <- Configuration file for flake8
+├── setup.py            <- Configuration file for the local packages
 │
-└── computer_vision   <- Source code for use in this project.
+└── src                       <- Source code for the project.
     │
-    ├── __init__.py             <- Makes computer_vision a Python module
+    ├── __init__.py            <- Makes 'src' a Python package/module
     │
-    ├── config.py               <- Store useful variables and configuration
+    ├── config.py              <- Stores useful variables and configurations
     │
-    ├── dataset.py              <- Scripts to download or generate data
+    ├── dataloader.py          <- Functions to import and process data
     │
-    ├── features.py             <- Code to create features for modeling
+    ├── model.py               <- Contains functions to create a custom ResNet model for the project
     │
-    ├── modeling                
-    │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
+    ├── predict.py             <- Code to use the model and make predictions
     │
-    └── plots.py                <- Code to create visualizations
-```
+    └── train.py               <- Code to train the model
 
---------
+```
 

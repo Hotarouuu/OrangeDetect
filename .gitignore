@@ -1,5 +1,7 @@
 # Data
-/data/
+data/eval
+data/test
+data/train
 
 # Models
 
@@ -98,6 +100,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+notebooks/artifacts
 
 # IPython
 profile_default/
@@ -196,3 +199,6 @@ cython_debug/
 
 # Temp stuff
 temp/
+
+# Some random stuff
+template.py

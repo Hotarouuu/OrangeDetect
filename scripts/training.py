@@ -1,7 +1,6 @@
-from resnet_finetuned import create_resnet50_model
-from resnet101_finetuned import create_resnet101_model
-from dataloader import dataload
-from src.train.train import Trainer
+from src import create_resnet101_model, create_resnet50_model
+from src import dataload
+from src import Trainer
 import warnings
 import torch
 warnings.filterwarnings("ignore")

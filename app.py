@@ -24,6 +24,7 @@ if uploaded_file is not None:
     st.image(img_path, caption="Imagem carregada", use_column_width=True)
 
     with st.spinner("Rodando o modelo..."):
+        Detect()
         orange = Detect(model_path, artifact_url, img_path)
         label = orange.pred()
         st.success(f"Predição: {label}")

@@ -10,12 +10,30 @@ from PIL import Image
 import os
 
 class Detect:
+
+    """
+    A class to handle model detection tasks, including downloading models 
+    from Weight & Biases and managing associated file paths.
+
+    This class contains attributes to store the paths for model files, 
+    images, and the URL to access the models from Weight & Biases.
+
+    Attributes:
+        path (str): The local file path or directory where models are stored.
+        artifact_url (str): The URL from which models can be downloaded from Weight & Biases.
+        path_img (str): The path to the image associated with the model.
+
+    """
+    
     def __init__(self, path: str, artifact_url: str, path_img: str):
         self.artifact_url = artifact_url
         self.path_img = path_img
         self.path = path
 
     def best_artifact(self):
+
+
+
         artifact_path = os.path.join(self.path, "artifacts", "resnet50-finetuned-v2")
         artifact_file = os.path.join(artifact_path, "resnet50-finetuned.pth")
 

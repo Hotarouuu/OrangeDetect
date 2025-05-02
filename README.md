@@ -30,9 +30,10 @@ https://www.kaggle.com/datasets/mohammedarfathr/orange-fruit-daatset
 ## How to use:
 
 #### Install the requirements:
-    
+
 ```python
 pip install -r requirements.txt
+pip install e . 
 ```
 
 #### Login on Weights & Biases:
@@ -44,14 +45,14 @@ wandb login
 #### Download the data on Kaggle and add the path in .env
 
 ```
-DATASET_PATH = r'path\OrangeDetect\data'
-MODELS_FOLDER = r'path\OrangeDetect\models'
+DATASET_PATH = 'path\OrangeDetect\data'
+MODELS_FOLDER = 'path\OrangeDetect\models'
 ```
 
 #### Execute the data processing script:
 
 ```
-python -m scripts.data_treatment --PATH "path/to/data"
+python -m scripts.data_treatment --PATH "path\to\data"
 ```
 
 #### Execute the training scripts:

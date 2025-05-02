@@ -36,7 +36,7 @@ pip install -r requirements.txt
 pip install e . 
 ```
 
-#### Login on Weights & Biases:
+#### Login on Weights & Biases for tracking:
     
 ```python
 wandb login

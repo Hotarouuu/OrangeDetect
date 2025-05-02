@@ -11,7 +11,8 @@ import os
 
 load_dotenv()  
 
-dataset_path = os.getenv("DATASET_PATH")
+dataset_path = os.getenv("DATASET_PATH") # Define variables with .env or add path here
+model_path = os.getenv("MODELS_FOLDER") # Define variables with .env or add path here
 
 # Hyperparameters
 
@@ -79,15 +80,11 @@ def main():
 
 
     # Loggin Model Artifact
-    dummy_input = torch.randn(1, 3, 224, 224).float().to(device='cuda')
-    torch.onnx.export(model, dummy_input, rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.onnx")
-    torch.save(model.state_dict(), rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.pth")
 
-    artifact = wandb.Artifact(f"resnet-finetuned.onnx", type="model")
+    torch.save(model.state_dict(), rf"{model_path}\{model_name}-finetuned.pth")
+
     artifact2 = wandb.Artifact(f'resnet-finetuned', type='model')
-    artifact.add_file(rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.onnx")
-    artifact2.add_file(rf"C:\Users\Lucas\Documents\GitHub\OrangeDetect\models\{model_name}-finetuned.pth")
-    wandb.log_artifact(artifact)
+    artifact2.add_file(rf"{model_path}\{model_name}-finetuned.pth")
     wandb.log_artifact(artifact2)
 
 

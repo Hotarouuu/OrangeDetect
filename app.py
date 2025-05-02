@@ -6,8 +6,8 @@ import os
 
 load_dotenv()  
 
-artifact_url = os.getenv("ARTIFACT_URL_MODEL")
-model_path = os.getenv('MODELS_FOLDER')
+artifact_url = os.getenv("ARTIFACT_URL_MODEL") # Define variables with .env or add path here
+model_path = os.getenv('MODELS_FOLDER') # Define variables with .env or add path here
 
 st.title("Orange Detection")
 

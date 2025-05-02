@@ -5,7 +5,7 @@ data/train
 
 # Models
 
-/models/
+/models/artifacts
 
 # Experiments
 

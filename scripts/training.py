@@ -1,12 +1,18 @@
-from src.models.resnet_finetuned import create_resnet50_model
-from src.models.resnet101_finetuned import create_resnet101_model
-from src.data.dataloader import dataload
+from resnet_finetuned import create_resnet50_model
+from resnet101_finetuned import create_resnet101_model
+from dataloader import dataload
 from src.train.train import Trainer
 import warnings
 import torch
 warnings.filterwarnings("ignore")
 import argparse
 import wandb
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  
+
+dataset_path = os.getenv("DATASET_PATH")
 
 # Hyperparameters
 
@@ -27,8 +33,6 @@ model_name = args.MODEL
 
 def main():
 
-    path_data = r'C:\Users\Lucas\Documents\GitHub\OrangeDetect\data\processed'
-    name_ml = 'Orange Detect'
 
     if args.LEARNING_RATE is None:
         lr = 0.001
@@ -43,7 +47,7 @@ def main():
         model, criterion, optimizer_conv = create_resnet50_model(num_classes=3, lr=lr)
 
 
-    train_dataloader, test_dataloader, eval_dataloader = dataload(path_data)
+    train_dataloader, test_dataloader, eval_dataloader = dataload(dataset_path)
 
     # Training
 

@@ -1,0 +1,12 @@
+opencv_contrib_python==4.11.0.86
+opencv_python==4.11.0.86
+Pillow==11.2.1
+setuptools==69.5.1
+setuptools==75.8.0
+setuptools==80.1.0
+torch==2.6.0
+torch==2.7.0
+torcheval==0.0.7
+torchvision==0.21.0
+torchvision==0.22.0
+wandb==0.19.10

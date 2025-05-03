@@ -25,6 +25,8 @@ Key Features:
 
 ## Download the data on Kaggle
 
+Download the file below and place it inside the data folder
+
 https://www.kaggle.com/datasets/mohammedarfathr/orange-fruit-daatset
 
 ## How to use:

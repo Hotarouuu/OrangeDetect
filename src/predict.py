@@ -32,7 +32,10 @@ class Detect:
         
         model, _, _ = create_resnet50_model()
 
-        model.load_state_dict(torch.load(self.path, map_location="cpu"))  # weights_only=True não é necessário
+        raw_path = os.listdir(self.path)
+        model_path = os.path.join(self.path, raw_path[0])
+
+        model.load_state_dict(torch.load(model_path, map_location="cpu"))  # weights_only=True não é necessário
 
         return model
     

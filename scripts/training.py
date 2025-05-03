@@ -10,12 +10,7 @@ from dotenv import load_dotenv
 import os
 import torch
 
-if torch.cuda.is_available():
-    device = torch.device('cuda')
-    print('CUDA is available. Using GPU.')
-else:
-    device = torch.device('cpu')
-    print('CUDA is not available. Using CPU.')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 load_dotenv()  
 

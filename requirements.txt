@@ -4,7 +4,11 @@ Pillow==11.2.1
 python-dotenv==1.1.0
 setuptools==80.1.0           
 streamlit==1.45.0             
-torch==2.7.0                  
 torcheval==0.0.7
-torchvision==0.22.0           
 wandb==0.19.10
+
+# PyTorch with CUDA
+torch==2.7.0+cu118
+torchvision==0.22.0+cu118
+torchaudio==2.7.0+cu118
+--extra-index-url https://download.pytorch.org/whl/cu118

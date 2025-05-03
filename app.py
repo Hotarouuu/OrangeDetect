@@ -24,7 +24,6 @@ if uploaded_file is not None:
     st.image(img_path, caption="Uploaded image", use_column_width=True)
 
     with st.spinner("Loading the model..."):
-        Detect()
-        orange = Detect(model_path, artifact_url, img_path)
+        orange = Detect(model_path, img_path)
         label = orange.pred()
         st.success(f"Prediction: {label}")

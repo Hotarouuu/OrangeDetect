@@ -20,13 +20,15 @@ dataset = os.path.join(dataset_path, "processed")
 
 # Hyperparameters
 
+def str2bool(v):
+    return v.lower() in ("true", "1", "yes", "y")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--LEARNING_RATE', type=float, help='Initial Learning Rate')
 parser.add_argument('--EPOCHS', type=int, help='Training Epochs')
 parser.add_argument('--NAME', type=str, help='Experiment name')
 parser.add_argument('--MODEL', type=str, help='Available models: Resnet50, Resnet101')
-
+parser.add_argument('--TRACKING', type=str2bool, default=False, help='True/False to enable tracking')
 
 args = parser.parse_args()
 
@@ -34,6 +36,11 @@ lr = args.LEARNING_RATE
 epochs = args.EPOCHS
 name = args.NAME
 model_name = args.MODEL
+tracking = args.TRACKING
+
+if tracking not in [True, False]:
+    raise TypeError('To activate Tracking you must only set True or False')
+
 
 def main():
 
@@ -74,7 +81,8 @@ def main():
     epochs=epochs,
     project="Orange Detect",
     config = config,
-    run_name=name
+    run_name=name,
+    tracking=tracking
 )
 
     training.train()

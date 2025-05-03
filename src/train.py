@@ -4,8 +4,9 @@ from torcheval.metrics import MulticlassF1Score, MulticlassPrecision, Multiclass
 import wandb
 
 
+
 class Trainer:
-    def __init__(self, model, train_loader, eval_loader, test_dataloader, criterion, optimizer, device, epochs, project="default", config=None, run_name=None):
+    def __init__(self, model, train_loader, eval_loader, test_dataloader, criterion, optimizer, device, epochs, project="default", config=None, run_name=None, tracking=False):
         self.model = model.to(device)
         self.train_loader = train_loader
         self.eval_loader = eval_loader
@@ -16,9 +17,11 @@ class Trainer:
         self.epochs = epochs
         self.config = config
         self.eval_metrics = None
+        self.tracking = tracking
 
-        wandb.init(project=project, name=run_name, config=config)
-        wandb.watch(self.model)
+        if self.tracking:
+            wandb.init(project=project, name=run_name, config=config)
+            wandb.watch(self.model)
 
     def train(self):
         self.model.train()
@@ -38,8 +41,9 @@ class Trainer:
 
                 if batch % 100 == 0:
                     print(f'Loss: {loss.item():.4f}')
-                
-                wandb.log({"batch_loss": loss.item(), "epoch": epoch})
+
+                if self.tracking:
+                    wandb.log({"batch_loss": loss.item(), "epoch": epoch})
 
             self.evaluate(epoch)
 
@@ -89,15 +93,16 @@ class Trainer:
 
         accuracy = correct / len(self.eval_loader.dataset)
         mean_loss = sum(metrics['loss']) / len(metrics['loss'])
-
-        wandb.log({
-            "eval_loss": mean_loss,
-            "eval_accuracy": accuracy,
-            "eval_f1": sum(metrics['f1']) / len(metrics['f1']),
-            "eval_precision": sum(metrics['precision']) / len(metrics['precision']),
-            "eval_recall": sum(metrics['recall']) / len(metrics['recall']),
-            "epoch": epoch
-        })
+        
+        if self.tracking:
+            wandb.log({
+                "eval_loss": mean_loss,
+                "eval_accuracy": accuracy,
+                "eval_f1": sum(metrics['f1']) / len(metrics['f1']),
+                "eval_precision": sum(metrics['precision']) / len(metrics['precision']),
+                "eval_recall": sum(metrics['recall']) / len(metrics['recall']),
+                "epoch": epoch
+            })
 
         print(f'Accuracy: {accuracy * 100:.2f}%\n')
 
@@ -137,22 +142,18 @@ class Trainer:
         recall = recall_metric.compute().item()
         confusion = confusion_metric.compute().numpy()
 
-        wandb.log({
-            "test_f1": f1sc,
-            "test_precision": precision,
-            "test_recall": recall,
-            "confusion_matrix": wandb.plot.confusion_matrix(
-                preds=y_pred.numpy(),
-                y_true=y_correct.numpy(),
-                class_names=[str(i) for i in range(3)]
-            )
-        })
-
-        # salvar artefato
-        artifact = wandb.Artifact("final_test_metrics", type="evaluation")
-        #artifact.add_file("confusion_matrix.png")  # opcional: se salvar local
-        wandb.log_artifact(artifact)
+        if self.tracking:
+            wandb.log({
+                "test_f1": f1sc,
+                "test_precision": precision,
+                "test_recall": recall,
+                "confusion_matrix": wandb.plot.confusion_matrix(
+                    preds=y_pred.numpy(),
+                    y_true=y_correct.numpy(),
+                    class_names=[str(i) for i in range(3)]
+                )
+            })
+            artifact = wandb.Artifact("final_test_metrics", type="evaluation")
+            wandb.log_artifact(artifact)
 
         return f1sc, precision, recall, confusion
-
-

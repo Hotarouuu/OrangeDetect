@@ -8,11 +8,20 @@ import argparse
 import wandb
 from dotenv import load_dotenv
 import os
+import torch
+
+if torch.cuda.is_available():
+    device = torch.device('cuda')
+    print('CUDA is available. Using GPU.')
+else:
+    device = torch.device('cpu')
+    print('CUDA is not available. Using CPU.')
 
 load_dotenv()  
 
 dataset_path = os.getenv("DATASET_PATH") # Define variables with .env or add path here
 model_path = os.getenv("MODELS_FOLDER") # Define variables with .env or add path here
+dataset = os.path.join(dataset_path, "processed")
 
 # Hyperparameters
 
@@ -47,7 +56,7 @@ def main():
         model, criterion, optimizer_conv = create_resnet50_model(num_classes=3, lr=lr)
 
 
-    train_dataloader, test_dataloader, eval_dataloader = dataload(dataset_path)
+    train_dataloader, test_dataloader, eval_dataloader = dataload(dataset)
 
     # Training
 

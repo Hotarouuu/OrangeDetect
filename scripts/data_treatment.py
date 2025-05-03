@@ -7,7 +7,10 @@ parser.add_argument('--PATH', type=str, help='Data path')
 
 
 args = parser.parse_args()
-path = args.PATH
+path_raw = args.PATH
+
+field = os.listdir(path_raw)
+path = os.path.join(path_raw, field[1])
 
 if path == None:
     raise TypeError('Add the path to the script with --PATH "path/to/data"')
@@ -32,12 +35,11 @@ else:
 
     # --- Data Processing Start ---
 
-    path = path
     folders = os.listdir(path)
 
-    citrus_canker = [os.path.abspath(os.path.join(path, folders[1], f)) for f in os.listdir(os.path.join(path, folders[1]))]
-    healthy       = [os.path.abspath(os.path.join(path, folders[2], f)) for f in os.listdir(os.path.join(path, folders[2]))]
-    melanose      = [os.path.abspath(os.path.join(path, folders[3], f)) for f in os.listdir(os.path.join(path, folders[3]))]
+    citrus_canker = [os.path.abspath(os.path.join(path, folders[0], f)) for f in os.listdir(os.path.join(path, folders[0]))]
+    healthy       = [os.path.abspath(os.path.join(path, folders[1], f)) for f in os.listdir(os.path.join(path, folders[1]))]
+    melanose      = [os.path.abspath(os.path.join(path, folders[2], f)) for f in os.listdir(os.path.join(path, folders[2]))]
 
     print('Starting data processing and splitting...\n')
 
@@ -57,7 +59,8 @@ else:
     test  = citrus_canker[2000:2300] + healthy[2000:2300] + melanose[2000:2300]
     eval  = citrus_canker[2300:2600] + healthy[2300:2600] + melanose[2300:2600]
 
-    base_dir = r'C:\Users\Lucas\Documents\GitHub\Computer_Vision_ML\computer_vision\data\processed'
+    base_dir = os.path.join(path_raw, 'processed')
+    os.makedirs(base_dir, exist_ok=True)  # Ensure the base directory exists
     dirs = {split: os.path.join(base_dir, split) for split in ['train', 'test', 'eval']}
 
     for folder in dirs.values():
@@ -74,3 +77,6 @@ else:
     copy_files(eval, dirs['eval'])
 
     print('\nProcess completed successfully!')
+
+    # Removing raw folder
+    shutil.rmtree(path=path)

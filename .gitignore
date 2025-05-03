@@ -1,7 +1,5 @@
 # Data
-data/eval
-data/test
-data/train
+data/processed
 
 # Models
 

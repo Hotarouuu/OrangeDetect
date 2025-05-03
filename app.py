@@ -23,6 +23,7 @@ if uploaded_file is not None:
     st.image(img_path, caption="Uploaded image", use_column_width=True)
 
     with st.spinner("Loading the model..."):
+<<<<<<< Updated upstream
         orange = Detect(model_path, img_path)
         label = orange.pred()
         response = ''
@@ -36,3 +37,16 @@ if uploaded_file is not None:
             st.success(f"This orange is healthy")
 
 
+=======
+        Detect()
+        orange = Detect(model_path, img_path)
+        label = orange.pred()
+        result = ''
+        if label == 1:
+            result = 'Citrus Canker'
+        if label == 2:
+            result = 'Healthy'
+        else:
+            result = 'Melanose'
+        st.success(f"Detection: {result}")
+>>>>>>> Stashed changes

@@ -31,6 +31,8 @@ https://www.kaggle.com/datasets/mohammedarfathr/orange-fruit-daatset
 
 ## How to use:
 
+**There are a few optional steps. If you want to retrain the model and track its training, run the scripts with "optional". If you don't want just run only those that do not have "optional"**
+
 #### Install the requirements:
 
 ```python

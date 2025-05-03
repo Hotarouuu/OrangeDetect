@@ -10,7 +10,7 @@ def create_resnet50_model(num_classes=3, lr=0.001, momentum=0.9):
     # Import pre-trained model
     model = resnet50(weights=weights)
 
-    # freeze the layers
+    # freeze the layers -> its necessary for the fine-tuning script
     for param in model.parameters():
         param.requires_grad = False
 
@@ -32,7 +32,7 @@ def create_resnet101_model(num_classes=3, lr=0.001, momentum=0.9):
     # Import pre-trained model
     model = resnet101(weights=weights)
 
-    # freeze the layers
+    # freeze the layers -> its necessary for the fine-tuning script
     for param in model.parameters():
         param.requires_grad = False
 

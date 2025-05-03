@@ -6,7 +6,6 @@ import os
 
 load_dotenv()  
 
-artifact_url = os.getenv("ARTIFACT_URL_MODEL") # Define variables with .env or add path here
 model_path = os.getenv('MODELS_FOLDER') # Define variables with .env or add path here
 
 st.title("Orange Detection")
@@ -26,4 +25,14 @@ if uploaded_file is not None:
     with st.spinner("Loading the model..."):
         orange = Detect(model_path, img_path)
         label = orange.pred()
-        st.success(f"Prediction: {label}")
+        response = ''
+        if label == 0:
+            response = 'Citrus Canker Detected'
+            st.error(response)
+        if label == 2:
+            response = 'Melanose Detected'
+            st.error(response)
+        else:
+            st.success(f"This orange is healthy")
+
+

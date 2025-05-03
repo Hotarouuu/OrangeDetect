@@ -38,8 +38,8 @@ pip install -r requirements.txt
 pip install e . 
 ```
 
-#### Login on Weights & Biases for tracking:
-    
+#### Login on Weights & Biases for tracking (optional):
+
 ```python
 wandb login
 ```
@@ -57,10 +57,10 @@ MODELS_FOLDER = 'path\OrangeDetect\models'
 python -m scripts.data_treatment --PATH "path\to\data"
 ```
 
-#### Execute the training scripts: -> Execute one time ONLY
+#### Execute the training scripts (optional) : -> Execute one time ONLY
 
 ```
-python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101
+python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101 --TRACKING True or False
 ```
 
 #### Execute the streamlit app

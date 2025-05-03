@@ -55,7 +55,7 @@ MODELS_FOLDER = 'path\OrangeDetect\models'
 python -m scripts.data_treatment --PATH "path\to\data"
 ```
 
-#### Execute the training scripts:
+#### Execute the training scripts: -> Execute one time ONLY
 
 ```
 python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101

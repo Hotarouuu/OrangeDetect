@@ -78,3 +78,9 @@ You can choose whether you want to track the model or not
 ```
 python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101 --TRACKING True or False
 ```
+
+## Current streamlit UI
+
+Kinda simple but thats it. Im going to improve it further
+
+![image](https://github.com/user-attachments/assets/334d15fc-4acb-401a-bccd-47354f56d27c)

@@ -1,10 +1,6 @@
 # Data
 data/processed
 
-# Models
-
-/models/artifacts
-/models/
 
 # Experiments
 

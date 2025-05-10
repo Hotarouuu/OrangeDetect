@@ -46,6 +46,8 @@ class Trainer:
                     wandb.log({"batch_loss": loss.item(), "epoch": epoch})
 
             self.evaluate(epoch)
+            
+            # Checkpoint
 
     def evaluate(self, epoch=0):
         print('\nEvaluating...')

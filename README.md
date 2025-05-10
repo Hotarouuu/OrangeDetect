@@ -23,15 +23,11 @@ Key Features:
 
 - Weights & Biases (WandB) (for experiment tracking and model monitoring)
 
-## Download the data on Kaggle
+**There are a few optional steps. If you want to retrain the model and track its training, run the scripts with "optional". If you don't want just run only those that do not have "optional"**
 
-Download the file below and place it inside the data folder
-
-https://www.kaggle.com/datasets/mohammedarfathr/orange-fruit-daatset
 
 ## How to use:
 
-**There are a few optional steps. If you want to retrain the model and track its training, run the scripts with "optional". If you don't want just run only those that do not have "optional"**
 
 #### Install the requirements:
 
@@ -40,29 +36,10 @@ pip install -r requirements.txt
 pip install e . 
 ```
 
-#### Login on Weights & Biases for tracking (optional):
-
-```python
-wandb login
-```
-
-#### Download the data on Kaggle and add the path in .env
+#### Add the path to the models folder in the .env file:
 
 ```
-DATASET_PATH = 'path\OrangeDetect\data'
-MODELS_FOLDER = 'path\OrangeDetect\models'
-```
-
-#### Execute the data processing script:
-
-```
-python -m scripts.data_treatment --PATH "path\to\data"
-```
-
-#### Execute the training scripts (optional) : -> Execute one time ONLY
-
-```
-python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101 --TRACKING True or False
+MODELS_FOLDER = '<path>\OrangeDetect\models'
 ```
 
 #### Execute the streamlit app
@@ -71,3 +48,39 @@ python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment 
 streamlit run app.py
 ```
 
+## How to train your own model:
+
+#### Download the data on Kaggle
+
+Download the file below and place it inside the data folder
+
+https://www.kaggle.com/datasets/mohammedarfathr/orange-fruit-daatset
+
+#### Login on Weights & Biases for tracking (optional):
+
+```python
+wandb login
+```
+
+#### Download the data on Kaggle and add both data and models path in .env:
+
+```
+DATASET_PATH = '<path>\OrangeDetect\data'
+MODELS_FOLDER = '<path>\OrangeDetect\models'
+```
+#### Execute the data processing script:
+
+```
+python -m scripts.data_treatment --PATH "path\to\data"
+```
+#### Execute the training scripts: -> Execute one time ONLY
+You can choose whether you want to track the model or not
+```
+python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101 --TRACKING True or False
+```
+
+## Current streamlit UI
+
+Kinda simple but thats it. Im going to improve it further
+
+![image](https://github.com/user-attachments/assets/334d15fc-4acb-401a-bccd-47354f56d27c)

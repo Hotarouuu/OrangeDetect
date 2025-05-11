@@ -84,3 +84,13 @@ python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment 
 Kinda simple but thats it. Im going to improve it further
 
 ![image](https://github.com/user-attachments/assets/334d15fc-4acb-401a-bccd-47354f56d27c)
+
+## Update log
+
+**Update 5.1**
+- Temporary fix involving the model
+
+**Update 5**
+
+- Added checkpoints during training
+- Added the best resnet model with 97% accuracy

@@ -2,7 +2,7 @@ import wandb
 import torchvision
 import torch
 from torchvision.models import resnet50
-from src.model import create_resnet50_model
+from src.model import create_resnet50_model, create_resnet101_model
 from torchvision import transforms
 from pathlib import Path
 import cv2
@@ -30,7 +30,7 @@ class Detect:
 
     def resnet_finetuned(self):
         
-        model, _, _ = create_resnet50_model()
+        model, _, _ = create_resnet101_model()
 
         raw_path = os.listdir(self.path)
         model_path = os.path.join(self.path, raw_path[0])

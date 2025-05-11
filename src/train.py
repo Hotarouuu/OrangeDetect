@@ -2,7 +2,12 @@ from torch.utils.data import DataLoader
 import torch
 from torcheval.metrics import MulticlassF1Score, MulticlassPrecision, MulticlassRecall, MulticlassConfusionMatrix
 import wandb
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+model_path = os.getenv("MODELS_FOLDER") 
 
 
 class Trainer:
@@ -46,8 +51,17 @@ class Trainer:
                     wandb.log({"batch_loss": loss.item(), "epoch": epoch})
 
             self.evaluate(epoch)
+
             
             # Checkpoint
+            filepath = os.path.join(model_path, f"resnet_checkpoint_{epoch}-finetuned.pth")
+            torch.save(self.model.state_dict(), filepath)
+
+            artifact = wandb.Artifact(f'resnet_checkpoint_{epoch}-finetuned.pth', type='model')
+            artifact.add_file(filepath)
+            wandb.log_artifact(artifact)
+
+            print(f'Checkpoint {epoch} saved')
 
     def evaluate(self, epoch=0):
         print('\nEvaluating...')

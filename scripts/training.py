@@ -24,7 +24,7 @@ def str2bool(v):
     return v.lower() in ("true", "1", "yes", "y")
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--LEARNING_RATE', type=float, help='Initial Learning Rate')
+parser.add_argument('--LEARNING_RATE', type=float, help='Initial Learning Rate', default=0.001)
 parser.add_argument('--EPOCHS', type=int, help='Training Epochs')
 parser.add_argument('--NAME', type=str, help='Experiment name')
 parser.add_argument('--MODEL', type=str, help='Available models: Resnet50, Resnet101')
@@ -44,11 +44,6 @@ if tracking not in [True, False]:
 
 def main():
 
-
-    if args.LEARNING_RATE is None:
-        lr = 0.001
-    else:
-        pass  
 
     if model_name  == None:
         raise TypeError('Available models: Resnet50, Resnet101')
@@ -92,6 +87,8 @@ def main():
 
 
     # Loggin Model Artifact
+
+    ## Keep in mind that this maybe is the "final" model but not the best one. Check on the wandb dashboard to see the best model.
 
     torch.save(model.state_dict(), rf"{model_path}\{model_name}-finetuned.pth")
 

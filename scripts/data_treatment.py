@@ -10,7 +10,15 @@ args = parser.parse_args()
 path_raw = args.PATH
 
 field = os.listdir(path_raw)
-path = os.path.join(path_raw, field[1])
+
+# Check if the item is a folder and not a .gitkeep file
+field = [f for f in field if os.path.isdir(os.path.join(path_raw, f)) and f != '.gitkeep']
+
+if not field:
+    raise ValueError("No valid folders found in the specified path")
+
+path = os.path.join(path_raw, field[0])
+
 
 if path == None:
     raise TypeError('Add the path to the script with --PATH "path/to/data"')

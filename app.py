@@ -26,13 +26,15 @@ if uploaded_file is not None:
         orange = Detect(model_path, img_path)
         label = orange.pred()
         response = ''
+    
         if label == 0:
             response = 'Citrus Canker Detected'
             st.error(response)
         if label == 2:
             response = 'Melanose Detected'
             st.error(response)
-        else:
+        if label == 1:
             st.success(f"This orange is healthy")
+    
 
 

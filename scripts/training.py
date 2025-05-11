@@ -81,10 +81,7 @@ def main():
 )
 
     training.train()
-
-
-    print('\nMetrics logged')
-
+    training.test()
 
     # Loggin Model Artifact
 

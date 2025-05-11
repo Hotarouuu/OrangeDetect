@@ -23,6 +23,7 @@ class Trainer:
         self.config = config
         self.eval_metrics = None
         self.tracking = tracking
+        self.run_name = run_name
 
         if self.tracking:
             wandb.init(project=project, name=run_name, config=config)
@@ -54,14 +55,16 @@ class Trainer:
 
             
             # Checkpoint
-            filepath = os.path.join(model_path, f"resnet_checkpoint_{epoch}-finetuned.pth")
+            filepath = os.path.join(model_path, f"resnet_checkpoint_{epoch + 1}-finetuned.pth")
             torch.save(self.model.state_dict(), filepath)
 
-            artifact = wandb.Artifact(f'resnet_checkpoint_{epoch}-finetuned.pth', type='model')
+            artifact = wandb.Artifact(f'Checkpoints_{self.run_name}', type='model')
             artifact.add_file(filepath)
             wandb.log_artifact(artifact)
 
-            print(f'Checkpoint {epoch} saved')
+            print(f'Checkpoint {epoch + 1} saved')
+
+            
 
     def evaluate(self, epoch=0):
         print('\nEvaluating...')
@@ -169,7 +172,14 @@ class Trainer:
                     class_names=[str(i) for i in range(3)]
                 )
             })
-            artifact = wandb.Artifact("final_test_metrics", type="evaluation")
+            artifact = wandb.Artifact(f"final_test_metrics", type="evaluation")
+            metrics_file = os.path.join(model_path, f"test_metrics.txt")
+            with open(metrics_file, "w") as f:
+                f.write(f"F1 Score: {f1sc}\n")
+                f.write(f"Precision: {precision}\n")
+                f.write(f"Recall: {recall}\n")
+                f.write(f"Confusion Matrix:\n{confusion}\n")
+            artifact.add_file(metrics_file)
             wandb.log_artifact(artifact)
 
         return f1sc, precision, recall, confusion

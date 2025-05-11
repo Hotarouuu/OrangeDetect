@@ -87,6 +87,11 @@ Kinda simple but thats it. Im going to improve it further
 
 ## Update log
 
+**Update 5.2**
+- Fixed checkpoint bugs
+- Added test metrics to Weights & Biases after training
+- Updated ResNet model
+
 **Update 5.1**
 - Temporary fix involving the model
 

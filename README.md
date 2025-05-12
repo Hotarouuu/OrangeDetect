@@ -87,6 +87,13 @@ Kinda simple but thats it. Im going to improve it further
 
 ## Update log
 
+**Update 5.4**
+- Best Model Saving Fixed
+- Added our v3 resnet model
+
+**Update 5.3**
+- Dropout added
+
 **Update 5.2**
 - Fixed checkpoint bugs
 - Added test metrics to Weights & Biases after training

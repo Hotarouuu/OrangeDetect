@@ -60,12 +60,11 @@ class Trainer:
             _, val_loss = self.evaluate(epoch)
             
             if epoch > 0:
-                if epoch % 2 == 0:
-                    if val_loss < best_val_loss:
-                        best_val_loss = val_loss
-                        torch.save(self.model.state_dict(), rf"{model_path}\{self.run_name}_bestmodel-finetuned.pth")
-                        print(f"Best model saved at epoch {epoch + 1}")
-                        print(f"Best model loss: {best_val_loss}")
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+                    torch.save(self.model.state_dict(), rf"{model_path}\{self.run_name}_bestmodel-finetuned.pth")
+                    print(f"Best model saved at epoch {epoch + 1}")
+                    print(f"Best model loss: {best_val_loss}")
             
             # Checkpoint
 

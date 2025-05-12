@@ -85,7 +85,7 @@ def main():
 
     training.train()
 
-    best_model = rf"{model_path}\resnet101_bestmodel-finetuned.pth"
+    best_model = rf"{model_path}\{name}_bestmodel-finetuned.pth"
     training.test(best_model)
 
     # Loggin Model Artifact

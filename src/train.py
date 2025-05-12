@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 model_path = os.getenv("MODELS_FOLDER") 
+CHECKPOINT_PATH = os.getenv("CHECKPOINTS_PATH")
 
 best_val_loss = float('inf')
 
@@ -58,15 +59,17 @@ class Trainer:
 
             _, val_loss = self.evaluate(epoch)
             
-            if epoch % 2 == 0:
-                if val_loss < best_val_loss:
-                    best_val_loss = val_loss
-                    torch.save(self.model.state_dict(), rf"{model_path}\{self.run_name}_bestmodel-finetuned.pth")
-                    print(f"Best model saved at epoch {epoch + 1}")
-                    print(f"Best model loss: {best_val_loss}")
+            if epoch > 0:
+                if epoch % 2 == 0:
+                    if val_loss < best_val_loss:
+                        best_val_loss = val_loss
+                        torch.save(self.model.state_dict(), rf"{model_path}\{self.run_name}_bestmodel-finetuned.pth")
+                        print(f"Best model saved at epoch {epoch + 1}")
+                        print(f"Best model loss: {best_val_loss}")
             
             # Checkpoint
-            filepath = os.path.join(model_path, f"resnet_checkpoint_{epoch + 1}-finetuned.pth")
+
+            filepath = os.path.join(CHECKPOINT_PATH, f"resnet_checkpoint_{epoch + 1}-finetuned.pth")
             torch.save(self.model.state_dict(), filepath)
 
             artifact = wandb.Artifact(f'Checkpoints_{self.run_name}', type='model')
@@ -143,7 +146,7 @@ class Trainer:
     def test(self, model_state_dict: str):
         print('\nTesting and logging')
         model = self.model
-        model.load_state_dict(model_state_dict)
+        model.load_state_dict(torch.load(model_state_dict))
         model.eval()
         y_correct = []
         y_pred = []

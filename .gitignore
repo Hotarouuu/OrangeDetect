@@ -12,7 +12,7 @@ data/processed
 
 # Old Models folder
 
-/old_models/
+/checkpoints/
 
 # Mac OS-specific storage files
 .DS_Store

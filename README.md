@@ -73,7 +73,7 @@ MODELS_FOLDER = '<path>\OrangeDetect\models'
 ```
 python -m scripts.data_treatment --PATH "path\to\data"
 ```
-#### Execute the training scripts: -> Execute one time ONLY
+#### Execute the training scripts:
 You can choose whether you want to track the model or not
 ```
 python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101 --TRACKING True or False
@@ -86,6 +86,11 @@ Kinda simple but thats it. Im going to improve it further
 ![image](https://github.com/user-attachments/assets/334d15fc-4acb-401a-bccd-47354f56d27c)
 
 ## Update log
+
+**Update 5.2**
+- Fixed checkpoint bugs
+- Added test metrics to Weights & Biases after training
+- Updated ResNet model
 
 **Update 5.1**
 - Temporary fix involving the model

@@ -63,9 +63,9 @@ else:
         print(f'Citrus Canker: {len(citrus_canker)} | Healthy: {len(healthy)} | Melanose: {len(melanose)}')
 
     # Split the data
-    train = citrus_canker[:2000] + healthy[:2000] + melanose[:2000]
-    test  = citrus_canker[2000:2300] + healthy[2000:2300] + melanose[2000:2300]
-    eval  = citrus_canker[2300:2600] + healthy[2300:2600] + melanose[2300:2600]
+    train = citrus_canker[:2400] + healthy[:2400] + melanose[:2400]
+    test  = citrus_canker[2400:2500] + healthy[2400:2500] + melanose[2400:2500]
+    eval  = citrus_canker[2500:2600] + healthy[2500:2600] + melanose[2500:2600]
 
     base_dir = os.path.join(path_raw, 'processed')
     os.makedirs(base_dir, exist_ok=True)  # Ensure the base directory exists

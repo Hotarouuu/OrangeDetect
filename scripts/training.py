@@ -41,6 +41,9 @@ tracking = args.TRACKING
 if tracking not in [True, False]:
     raise TypeError('To activate Tracking you must only set True or False')
 
+# Fixing the model name
+
+name = name.replace(" ", "_")
 
 def main():
 
@@ -81,16 +84,15 @@ def main():
 )
 
     training.train()
-    training.test()
+
+    best_model = rf"{model_path}\resnet101_bestmodel-finetuned.pth"
+    training.test(best_model)
 
     # Loggin Model Artifact
 
-    ## Keep in mind that this maybe is the "final" model but not the best one. Check on the wandb dashboard to see the best model.
-
-    torch.save(model.state_dict(), rf"{model_path}\{model_name}-finetuned.pth")
 
     artifact2 = wandb.Artifact(f'resnet-finetuned', type='model')
-    artifact2.add_file(rf"{model_path}\{model_name}-finetuned.pth")
+    artifact2.add_file(best_model)
     wandb.log_artifact(artifact2)
 
 

@@ -1,5 +1,6 @@
 from torch.utils.data import DataLoader
 import torch
+from torch import nn
 from torcheval.metrics import MulticlassF1Score, MulticlassPrecision, MulticlassRecall, MulticlassConfusionMatrix
 import wandb
 import os
@@ -8,6 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 model_path = os.getenv("MODELS_FOLDER") 
+
+best_val_loss = float('inf')
 
 
 class Trainer:
@@ -24,14 +27,15 @@ class Trainer:
         self.eval_metrics = None
         self.tracking = tracking
         self.run_name = run_name
+        self.dropout = nn.Dropout(p=0.2)
 
         if self.tracking:
             wandb.init(project=project, name=run_name, config=config)
             wandb.watch(self.model)
 
-    def train(self):
+    def train(self,):
         self.model.train()
-
+        global best_val_loss
         for epoch in range(self.epochs):
             print(f'\n------ Epoch {epoch + 1} ------')
 
@@ -50,9 +54,16 @@ class Trainer:
 
                 if self.tracking:
                     wandb.log({"batch_loss": loss.item(), "epoch": epoch})
+                X = self.dropout(X)
 
-            self.evaluate(epoch)
-
+            _, val_loss = self.evaluate(epoch)
+            
+            if epoch % 2 == 0:
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+                    torch.save(self.model.state_dict(), rf"{model_path}\{self.run_name}_bestmodel-finetuned.pth")
+                    print(f"Best model saved at epoch {epoch + 1}")
+                    print(f"Best model loss: {best_val_loss}")
             
             # Checkpoint
             filepath = os.path.join(model_path, f"resnet_checkpoint_{epoch + 1}-finetuned.pth")
@@ -127,11 +138,13 @@ class Trainer:
 
         self.eval_metrics = metrics
         self.model.train()
-        return metrics
+        return metrics, loss
 
-    def test(self):
+    def test(self, model_state_dict: str):
         print('\nTesting and logging')
-        self.model.eval()
+        model = self.model
+        model.load_state_dict(model_state_dict)
+        model.eval()
         y_correct = []
         y_pred = []
 

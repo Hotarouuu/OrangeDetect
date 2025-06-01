@@ -1,4 +1,4 @@
-from src import create_resnet101_model, create_resnet50_model
+from src import ViT_Model
 from src import dataload
 from src import Trainer
 import warnings
@@ -9,6 +9,7 @@ import wandb
 from dotenv import load_dotenv
 import os
 import torch
+import torch.optim as optim
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -27,7 +28,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--LEARNING_RATE', type=float, help='Initial Learning Rate', default=0.001)
 parser.add_argument('--EPOCHS', type=int, help='Training Epochs')
 parser.add_argument('--NAME', type=str, help='Experiment name')
-parser.add_argument('--MODEL', type=str, help='Available models: Resnet50, Resnet101')
+# parser.add_argument('--MODEL', type=str, help='Available models: Resnet50, Resnet101') -> Now we are using only one Vision Transfomers model
 parser.add_argument('--TRACKING', type=str2bool, default=False, help='True/False to enable tracking')
 
 args = parser.parse_args()
@@ -48,15 +49,17 @@ name = name.replace(" ", "_")
 def main():
 
 
-    if model_name  == None:
-        raise TypeError('Available models: Resnet50, Resnet101')
-    elif model_name == 'resnet101' or model_name == 'Resnet101':
-        model, criterion, optimizer_conv = create_resnet101_model(num_classes=3, lr=lr)
-    else:
-        model, criterion, optimizer_conv = create_resnet50_model(num_classes=3, lr=lr)
+
+    model, criterion, optimizer_conv, tokenizer = ViT_Model(num_classes=3, lr=lr)
 
 
     train_dataloader, test_dataloader, eval_dataloader = dataload(dataset)
+
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(
+    optimizer_conv,
+    T_max=epochs,  # número total de épocas
+    eta_min=1e-6   # learning rate mínimo
+    )
 
     # Training
 
@@ -75,6 +78,7 @@ def main():
     test_dataloader=test_dataloader,
     criterion=criterion,
     optimizer=optimizer_conv,
+    scheduler = scheduler
     device='cuda',
     epochs=epochs,
     project="Orange Detect",
@@ -85,13 +89,13 @@ def main():
 
     training.train()
 
-    best_model = rf"{model_path}\{name}_bestmodel-finetuned.pth"
+    best_model = rf"{model_path}\{name}_bestmodel.pth"
     training.test(best_model)
 
     # Loggin Model Artifact
 
 
-    artifact2 = wandb.Artifact(f'resnet-finetuned', type='model')
+    artifact2 = wandb.Artifact(f'ViT-bestmodel', type='model')
     artifact2.add_file(best_model)
     wandb.log_artifact(artifact2)
 

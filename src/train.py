@@ -15,7 +15,7 @@ best_val_loss = float('inf')
 
 
 class Trainer:
-    def __init__(self, model, train_loader, eval_loader, test_dataloader, criterion, optimizer, device, epochs, project="default", config=None, run_name=None, tracking=False):
+    def __init__(self, model, train_loader, eval_loader, test_dataloader, criterion, optimizer, scheduler, tokenizer, device, epochs, project="default", config=None, run_name=None, tracking=False):
         self.model = model.to(device)
         self.train_loader = train_loader
         self.eval_loader = eval_loader
@@ -28,6 +28,8 @@ class Trainer:
         self.eval_metrics = None
         self.tracking = tracking
         self.run_name = run_name
+        self.scheduler = scheduler
+        self.tokenizer = tokenizer
         self.dropout = nn.Dropout(p=0.2)
 
         if self.tracking:
@@ -42,13 +44,15 @@ class Trainer:
 
             for batch, (X, y) in enumerate(self.train_loader):
                 X, y = X.to(self.device), y.to(self.device)
+                X = self.tokenizer(X, return_tensors="pt", do_rescale=False).to(self.device)
 
-                pred = self.model(X)
-                loss = self.criterion(pred, y)
+                pred = self.model(**X)
+                loss = self.criterion(pred['logits'], y)
 
                 loss.backward()
                 self.optimizer.step()
                 self.optimizer.zero_grad()
+                self.scheduler.step()
 
                 if batch % 100 == 0:
                     print(f'Loss: {loss.item():.4f}')
@@ -68,7 +72,7 @@ class Trainer:
             
             # Checkpoint
 
-            filepath = os.path.join(CHECKPOINT_PATH, f"resnet_checkpoint_{epoch + 1}-finetuned.pth")
+            filepath = os.path.join(CHECKPOINT_PATH, f"checkpoint_{epoch + 1}-finetuned.pth")
             torch.save(self.model.state_dict(), filepath)
 
             artifact = wandb.Artifact(f'Checkpoints_{self.run_name}', type='model')
@@ -98,8 +102,9 @@ class Trainer:
         with torch.no_grad():
             for X_test, y_test in self.eval_loader:
                 X_test, y_test = X_test.to(self.device), y_test.to(self.device)
-                pred = self.model(X_test)
-                loss = self.criterion(pred, y_test).item()
+                X_test = self.tokenizer(X_test, return_tensors="pt", do_rescale=False).to(self.device)
+                pred = self.model(**X_test)
+                loss = self.criterion(pred['logits'], y_test).item()
                 total_loss += loss
 
                 predicted = pred.argmax(dim=1)
@@ -153,7 +158,8 @@ class Trainer:
         with torch.no_grad():
             for X, y in self.train_loader:
                 X, y = X.to(self.device), y.to(self.device)
-                pred = self.model(X)
+                X = self.tokenizer(X, return_tensors="pt", do_rescale=False).to(self.device)
+                pred = self.model(**X)
                 predicted = pred.argmax(dim=1)
                 y_pred.append(predicted.cpu())
                 y_correct.append(y.cpu())

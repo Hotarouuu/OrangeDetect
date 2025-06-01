@@ -1,47 +1,29 @@
 import torch.nn as nn
 import torch.optim as optim
 from torchvision.models import resnet50, ResNet50_Weights, resnet101, ResNet101_Weights
+from transformers import ViTImageProcessor, ViTForImageClassification
 
-def create_resnet50_model(num_classes=3, lr=0.001, momentum=0.9):
+def ViT_Model(lr=3e-4, weight_decay=0.3,):
  
-    # Import the weights
-    weights = ResNet50_Weights.DEFAULT
-
-    # Import pre-trained model
-    model = resnet50(weights=weights)
+    model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224')
+    tokenizer = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
 
     # freeze the layers
     for param in model.parameters():
         param.requires_grad = False
 
     # Replaces the FC layer for our classes
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Linear(num_ftrs, num_classes)
+    num_ftrs = model.classifier.in_features
+    model.classifier = nn.Linear(num_ftrs, 3)
 
     # Defining loss & optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.fc.parameters(), lr=lr, momentum=momentum)
+    optimizer = optim.AdamW(
+        model.parameters(),
+        lr=3e-4,  # learning rate padrão usado no paper
+        weight_decay=0.3,  # weight decay para regularização
+        betas=(0.9, 0.999)  # valores padrão do Adam
+    )
 
-    return model, criterion, optimizer
+    return model, criterion, optimizer, tokenizer
 
-def create_resnet101_model(num_classes=3, lr=0.001, momentum=0.9):
- 
-    # Import the weights
-    weights = ResNet101_Weights.DEFAULT
-
-    # Import pre-trained model
-    model = resnet101(weights=weights)
-
-    # freeze the layers
-    for param in model.parameters():
-        param.requires_grad = False
-
-    # Replaces the FC layer for our classes
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Linear(num_ftrs, num_classes)
-
-    # Defining loss & optimizer
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.fc.parameters(), lr=lr, momentum=momentum)
-
-    return model, criterion, optimizer

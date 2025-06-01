@@ -20,7 +20,7 @@ if uploaded_file is not None:
     with open(img_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    st.image(img_path, caption="Uploaded image", use_column_width=True)
+    st.image(img_path, caption="Uploaded image", use_container_width =True)
 
     with st.spinner("Loading the model..."):
         orange = Detect(model_path, img_path)
@@ -36,5 +36,3 @@ if uploaded_file is not None:
         if label == 1:
             st.success(f"This orange is healthy")
     
-
-

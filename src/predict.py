@@ -1,8 +1,7 @@
 import wandb
 import torchvision
 import torch
-from torchvision.models import resnet50
-from src.model import create_resnet50_model, create_resnet101_model
+from src.model import ViT_Model
 from torchvision import transforms
 from pathlib import Path
 import cv2
@@ -24,36 +23,44 @@ class Detect:
 
     """
     
-    def __init__(self, path: str , path_img: str):
+    def __init__(self, path: str , path_img):
         self.path_img = path_img
         self.path = path
 
-    def resnet_finetuned(self):
+    def model_vit(self):
         
-        model, _, _ = create_resnet101_model()
+        model, _, _ , tokenizer = ViT_Model()
 
         raw_path = os.listdir(self.path)
         model_path = os.path.join(self.path, raw_path[0])
 
         model.load_state_dict(torch.load(model_path, map_location="cpu"))  
 
-        return model
+        return model, tokenizer
     
     def pred(self):
         
-        model = self.resnet_finetuned()
+        model, tokenizer = self.model_vit()
 
         transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),  # Convert to tensor first
-            transforms.Normalize([0.5], [0.5])  # Then normalize
-            ])
+        ])
         
-        img = cv2.imread(self.path_img)
-        img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        img_tensor = transform(img).unsqueeze(0)
+        if isinstance(self.path_img, str):
+            img = cv2.imread(self.path_img)
+            img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            img_tensor = transform(img).unsqueeze(0)
 
-        result = model(img_tensor)[0].argmax(dim=0)
-        return result
+            result = model(img_tensor)[0].argmax(dim=0)
+            return result
+        else:
+            img = self.path_img
+            img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            img_tensor = transform(img).unsqueeze(0)
+
+            result = model(img_tensor)[0].argmax(dim=0)
+            return result
+
         
 

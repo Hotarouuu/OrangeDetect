@@ -9,9 +9,7 @@ def dataload(path):
 
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
-        transforms.ToTensor(),  # Convert to tensor first
-        transforms.Normalize([0.5], [0.5])  # Then normalize
-    ])
+        transforms.ToTensor()]) # I removed the normalize part because of the tokenizer from the ViT
 
     path_test = os.path.join(path, "test")
     path_train = os.path.join(path, "train")

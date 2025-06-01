@@ -10,7 +10,6 @@ data/processed
 /mlruns/
 /wandb/
 
-/notebooks
 
 # Old Models folder
 

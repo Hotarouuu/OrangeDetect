@@ -30,7 +30,7 @@ class Trainer:
         self.run_name = run_name
         self.scheduler = scheduler
         self.tokenizer = tokenizer
-        self.dropout = nn.Dropout(p=0.2)
+        #self.dropout = nn.Dropout(p=0.2)
 
         if self.tracking:
             wandb.init(project=project, name=run_name, config=config)
@@ -59,7 +59,7 @@ class Trainer:
 
                 if self.tracking:
                     wandb.log({"batch_loss": loss.item(), "epoch": epoch})
-                X = self.dropout(X)
+                #X = self.dropout(X)
 
             _, val_loss = self.evaluate(epoch)
             
@@ -75,7 +75,7 @@ class Trainer:
             filepath = os.path.join(CHECKPOINT_PATH, f"checkpoint_{epoch + 1}-finetuned.pth")
             torch.save(self.model.state_dict(), filepath)
 
-            artifact = wandb.Artifact(f'Checkpoints_{self.run_name}', type='model')
+            artifact = wandb.Artifact(f'{self.run_name}', type='model')
             artifact.add_file(filepath)
             wandb.log_artifact(artifact)
 
@@ -107,7 +107,7 @@ class Trainer:
                 loss = self.criterion(pred['logits'], y_test).item()
                 total_loss += loss
 
-                predicted = pred.argmax(dim=1)
+                predicted = pred['logits'].argmax(dim=1)
                 correct_batch = (predicted == y_test).sum().item()
                 correct += correct_batch
 

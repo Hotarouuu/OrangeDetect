@@ -36,7 +36,7 @@ args = parser.parse_args()
 lr = args.LEARNING_RATE
 epochs = args.EPOCHS
 name = args.NAME
-model_name = args.MODEL
+#model_name = args.MODEL
 tracking = args.TRACKING
 
 if tracking not in [True, False]:
@@ -52,7 +52,6 @@ def main():
 
     model, criterion, optimizer_conv, tokenizer = ViT_Model(num_classes=3, lr=lr)
 
-
     train_dataloader, test_dataloader, eval_dataloader = dataload(dataset)
 
     scheduler = optim.lr_scheduler.CosineAnnealingLR(
@@ -67,7 +66,6 @@ def main():
     config = {
         'Optimizer' : optimizer_conv,
         'Loss Function' : criterion,
-        'Model' : model_name,
         'Num Classes' : 3
     }
 
@@ -78,7 +76,8 @@ def main():
     test_dataloader=test_dataloader,
     criterion=criterion,
     optimizer=optimizer_conv,
-    scheduler = scheduler
+    scheduler = scheduler,
+    tokenizer=tokenizer,
     device='cuda',
     epochs=epochs,
     project="Orange Detect",
@@ -89,7 +88,8 @@ def main():
 
     training.train()
 
-    best_model = rf"{model_path}\{name}_bestmodel.pth"
+    best_model = rf"{model_path}\{name}_bestmodel-finetuned.pth"
+
     training.test(best_model)
 
     # Loggin Model Artifact

@@ -3,7 +3,7 @@ import torch.optim as optim
 from torchvision.models import resnet50, ResNet50_Weights, resnet101, ResNet101_Weights
 from transformers import ViTImageProcessor, ViTForImageClassification
 
-def ViT_Model(lr=3e-4, weight_decay=0.3,):
+def ViT_Model(num_classes=3, lr=3e-4, weight_decay=0.3,):
  
     model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224')
     tokenizer = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
@@ -14,7 +14,7 @@ def ViT_Model(lr=3e-4, weight_decay=0.3,):
 
     # Replaces the FC layer for our classes
     num_ftrs = model.classifier.in_features
-    model.classifier = nn.Linear(num_ftrs, 3)
+    model.classifier = nn.Linear(num_ftrs, num_classes)
 
     # Defining loss & optimizer
     criterion = nn.CrossEntropyLoss()

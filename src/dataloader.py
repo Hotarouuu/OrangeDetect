@@ -21,8 +21,8 @@ def dataload(path):
 
 
 
-    train_dataloader = DataLoader(train, batch_size=32, num_workers=4,shuffle=True)
-    test_dataloader = DataLoader(test, batch_size=32, num_workers=4,shuffle=True)
-    eval_dataloader = DataLoader(eval, batch_size=32, num_workers=4,shuffle=True)
+    train_dataloader = DataLoader(train, batch_size=32, num_workers=4, shuffle=True)
+    test_dataloader = DataLoader(test, batch_size=32, num_workers=4, shuffle=False)  # Disabled shuffling for test
+    eval_dataloader = DataLoader(eval, batch_size=32, num_workers=4, shuffle=False)   # Disabled shuffling for eval
 
     return train_dataloader, test_dataloader, eval_dataloader

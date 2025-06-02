@@ -42,6 +42,7 @@ class Detect:
         
         model, tokenizer = self.model_vit()
 
+
         transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),  # Convert to tensor first
@@ -52,14 +53,16 @@ class Detect:
             img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             img_tensor = transform(img).unsqueeze(0)
 
-            result = model(img_tensor)[0].argmax(dim=0)
+            result = model(img_tensor)['logits'].argmax()
             return result
+        
+        
         else:
             img = self.path_img
             img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             img_tensor = transform(img).unsqueeze(0)
 
-            result = model(img_tensor)[0].argmax(dim=0)
+            result = model(img_tensor)['logits'].argmax()
             return result
 
         

@@ -13,7 +13,7 @@ data/processed
 
 # Old Models folder
 
-/checkpoints/
+checkpoints/
 
 # Mac OS-specific storage files
 .DS_Store

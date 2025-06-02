@@ -5,6 +5,7 @@ from torcheval.metrics import MulticlassF1Score, MulticlassPrecision, Multiclass
 import wandb
 import os
 from dotenv import load_dotenv
+import io
 
 load_dotenv()
 
@@ -63,7 +64,7 @@ class Trainer:
 
             _, val_loss = self.evaluate(epoch)
             
-            if epoch > 0:
+            if epoch >= 0:
                 if val_loss < best_val_loss:
                     best_val_loss = val_loss
                     torch.save(self.model.state_dict(), rf"{model_path}\{self.run_name}_bestmodel-finetuned.pth")
@@ -71,17 +72,21 @@ class Trainer:
                     print(f"Best model loss: {best_val_loss}")
             
             # Checkpoint
-
-            filepath = os.path.join(CHECKPOINT_PATH, f"checkpoint_{epoch + 1}-finetuned.pth")
-            torch.save(self.model.state_dict(), filepath)
-
-            artifact = wandb.Artifact(f'{self.run_name}', type='model')
-            artifact.add_file(filepath)
-            wandb.log_artifact(artifact)
-
-            print(f'Checkpoint {epoch + 1} saved')
-
-            
+            if self.tracking:
+                artifact = wandb.Artifact(f'{self.run_name}_epoch_{epoch + 1}', type='model')
+                # Save model state dict to a temporary buffer
+                buffer = io.BytesIO()
+                torch.save(self.model.state_dict(), buffer)
+                buffer.seek(0)
+                # Add the buffer to the artifact
+                artifact.add_file(buffer, f'checkpoint_{epoch + 1}-finetuned.pth')
+                wandb.log_artifact(artifact)
+                print(f'Checkpoint {epoch + 1} saved to wandb')
+            else:
+                # Save checkpoint locally if tracking is disabled
+                checkpoint_path = os.path.join(CHECKPOINT_PATH, f'{self.run_name}_epoch_{epoch + 1}-finetuned.pth')
+                torch.save(self.model.state_dict(), checkpoint_path)
+                print(f'Checkpoint {epoch + 1} saved to {checkpoint_path}')
 
     def evaluate(self, epoch=0):
         print('\nEvaluating...')
@@ -150,19 +155,19 @@ class Trainer:
     def test(self, model_state_dict: str):
         print('\nTesting and logging')
         model = self.model
-        model.load_state_dict(torch.load(model_state_dict))
+        model.load_state_dict(torch.load(model_state_dict, map_location=self.device))
         model.eval()
         y_correct = []
         y_pred = []
 
         with torch.no_grad():
-            for X, y in self.train_loader:
+            for X, y in self.test_dataloader:
                 X, y = X.to(self.device), y.to(self.device)
                 X = self.tokenizer(X, return_tensors="pt", do_rescale=False).to(self.device)
-                pred = self.model(**X)
-                predicted = pred.argmax(dim=1)
-                y_pred.append(predicted.cpu())
-                y_correct.append(y.cpu())
+                pred = model(**X)
+                predicted = pred['logits'].argmax(dim=1)
+                y_pred.append(predicted.cpu().flatten())
+                y_correct.append(y.cpu().flatten())
 
         y_pred = torch.cat(y_pred, dim=0)
         y_correct = torch.cat(y_correct, dim=0)
@@ -181,6 +186,13 @@ class Trainer:
         precision = precision_metric.compute().item()
         recall = recall_metric.compute().item()
         confusion = confusion_metric.compute().numpy()
+        # Print results
+        print(f"\nTest Results:")
+        print(f"F1 Score: {f1sc:.4f}")
+        print(f"Precision: {precision:.4f}")
+        print(f"Recall: {recall:.4f}")
+        print(f"Confusion Matrix:\n{confusion}")
+
 
         if self.tracking:
             wandb.log({

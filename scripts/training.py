@@ -88,16 +88,17 @@ def main():
 
     training.train()
 
-    best_model = rf"{model_path}\{name}_bestmodel-finetuned.pth"
+    best_model = os.path.join(model_path, f"{name}_bestmodel-finetuned.pth")
+
 
     training.test(best_model)
 
     # Loggin Model Artifact
 
-
-    artifact2 = wandb.Artifact(f'ViT-bestmodel', type='model')
-    artifact2.add_file(best_model)
-    wandb.log_artifact(artifact2)
+    if tracking:
+        artifact2 = wandb.Artifact(f'ViT-bestmodel', type='model')
+        artifact2.add_file(best_model)
+        wandb.log_artifact(artifact2)
 
 
 

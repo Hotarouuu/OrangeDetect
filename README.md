@@ -73,7 +73,11 @@ MODELS_FOLDER = '<path>\OrangeDetect\models'
 ```
 python -m scripts.data_treatment --PATH "path\to\data"
 ```
+<<<<<<< Updated upstream
 #### Execute the training scripts:
+=======
+#### Execute the training scripts: -> Execute one time ONLY
+>>>>>>> Stashed changes
 You can choose whether you want to track the model or not
 ```
 python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment name --MODEL resnet50 or resnet101 --TRACKING True or False
@@ -84,6 +88,7 @@ python -m scripts.training --LEARNING_RATE lr --EPOCHS epochs --NAME experiment 
 Kinda simple but thats it. Im going to improve it further
 
 ![image](https://github.com/user-attachments/assets/334d15fc-4acb-401a-bccd-47354f56d27c)
+<<<<<<< Updated upstream
 
 ## Update log
 
@@ -106,3 +111,5 @@ Kinda simple but thats it. Im going to improve it further
 
 - Added checkpoints during training
 - Added the best resnet model with 97% accuracy
+=======
+>>>>>>> Stashed changes

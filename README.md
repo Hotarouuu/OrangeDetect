@@ -109,7 +109,3 @@ Kinda simple but thats it. Im going to improve it further
 
 - Added checkpoints during training
 - Added the best resnet model with 97% accuracy
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
